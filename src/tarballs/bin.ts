@@ -48,6 +48,8 @@ if exist "%~dp0..\\bin\\node.exe" (
     await fs.promises.writeFile(
       bin,
       `#!/usr/bin/env bash
+export NODE_NO_WARNINGS=1
+
 set -e
 echoerr() { echo "$@" 1>&2; }
 

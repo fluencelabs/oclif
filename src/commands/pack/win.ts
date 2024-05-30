@@ -16,6 +16,7 @@ const scripts = {
 
   cmd: (config: Interfaces.Config, additionalCLI?: string | undefined) => `@echo off
 setlocal enableextensions
+set NODE_NO_WARNINGS=1
 
 set ${additionalCLI ? `${additionalCLI.toUpperCase()}_BINPATH` : config.scopedEnvVarKey('BINPATH')}=%~dp0\\${
     additionalCLI ?? config.bin
@@ -23,9 +24,7 @@ set ${additionalCLI ? `${additionalCLI.toUpperCase()}_BINPATH` : config.scopedEn
 if exist "%LOCALAPPDATA%\\${config.dirname}\\client\\bin\\${additionalCLI ?? config.bin}.cmd" (
   "%LOCALAPPDATA%\\${config.dirname}\\client\\bin\\${additionalCLI ?? config.bin}.cmd" %*
 ) else (
-  "%~dp0\\..\\client\\bin\\node.exe" "%~dp0\\..\\client\\${
-    additionalCLI ? `${additionalCLI}\\bin\\run` : 'bin\\run'
-  }" %*
+  "%~dp0\\..\\client\\bin\\fluence.cmd" %*
 )
 `,
   nsis: ({
@@ -268,7 +267,7 @@ the CLI should already exist in a directory named after the CLI that is the root
     const nsisCustomization = config.nsisCustomization ? readFileSync(config.nsisCustomization, 'utf8') : ''
     const arches = buildConfig.targets.filter((t) => t.platform === 'win32').map((t) => t.arch)
 
-    await Tarballs.build(buildConfig, {pack: false, parallel: true, platform: 'win32', tarball: flags.tarball})
+    await Tarballs.build(buildConfig, {pack: true, parallel: true, platform: 'win32', tarball: flags.tarball})
 
     await Promise.all(
       arches.map(async (arch) => {

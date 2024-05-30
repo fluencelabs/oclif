@@ -43,7 +43,6 @@ export async function buildConfig(
 ): Promise<BuildConfig> {
   const config = await Config.load({devPlugins: false, root: path.resolve(root), userPlugins: false})
   root = config.root
-  const _gitSha = await gitSha(root, {short: true})
   // eslint-disable-next-line new-cap
   const tmp = await Tmp(config)
   const updateConfig = config.pjson.oclif.update || {}
@@ -65,7 +64,7 @@ export async function buildConfig(
   return {
     config,
     dist: (...args: string[]) => path.join(config.root, 'dist', ...args),
-    gitSha: _gitSha,
+    gitSha: '',
     nodeVersion,
     root,
     s3Config: updateConfig.s3,
